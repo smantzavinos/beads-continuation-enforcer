@@ -1,57 +1,51 @@
-# {{pluginName}}
+# opencode-beads-enforcer
 
-{{description}}
+Continuation enforcement for beads task management in OpenCode.
 
-> An OpenCode plugin created from the [opencode-plugin-template](https://github.com/zenobi-us/opencode-plugin-template)
+> An OpenCode plugin that monitors for in-progress beads and injects continuation prompts to prevent premature stopping.
 
-## Features
+## What it does
 
-- 🏗️ TypeScript-based plugin architecture
-- 🔧 Mise task runner integration
-- 📦 Bun/npm build tooling
-- ✨ ESLint + Prettier formatting
-- 🧪 Vitest testing setup
-- 🚀 GitHub Actions CI/CD
-- 📝 Release automation with release-please
+When using the `beads` task management system (`bd` CLI), this plugin:
 
-## Getting Started
+1. Monitors for `session.idle` events
+2. Checks if there are beads with `in_progress` status via `bd list --status=in_progress`
+3. Shows a countdown toast notification
+4. Injects a continuation prompt reminding the agent to complete the current bead
 
-1. **Clone this template:**
+This is similar to Oh-My-OpenCode's `todo-continuation-enforcer`, but for beads instead of the built-in todo system.
 
-   ```bash
-   cp -r opencode-plugin-template your-plugin-name
-   cd your-plugin-name
-   ```
+## Prerequisites
 
-2. **Update package.json:**
-   - Change `name` to your plugin name
-   - Update `description`
-   - Update `repository.url`
+- `bd` CLI (beads) must be installed and available in PATH
+- Project must be initialized with `bd init`
 
-3. **Install dependencies:**
+## Installation
 
-   ```bash
-   bun install
-   ```
+Add to your OpenCode config (`~/.config/opencode/config.json`):
 
-4. **Implement your plugin in `src/index.ts`:**
+```json
+{
+  "plugins": ["opencode-beads-enforcer"]
+}
+```
 
-   ```typescript
-   import type { Plugin } from '@opencode-ai/plugin';
+Or for project-level installation, add to `.opencode/config.json`:
 
-   export const YourPlugin: Plugin = async (ctx) => {
-     return {
-       tool: {
-         // Your plugin tools here
-       },
-     };
-   };
-   ```
+```json
+{
+  "plugins": ["opencode-beads-enforcer"]
+}
+```
 
-5. **Test your plugin:**
-   ```bash
-   mise run test
-   ```
+## Configuration
+
+No configuration required. The plugin automatically:
+
+- Skips injection if beads is not initialized in the project
+- Respects error cooldowns (3 seconds)
+- Cancels countdowns when the assistant is actively working
+- Extracts epic context from git branch names (pattern: `bd-XXXXXX`)
 
 ## Development
 
@@ -60,28 +54,6 @@
 - `mise run lint` - Lint code
 - `mise run lint:fix` - Fix linting issues
 - `mise run format` - Format code with Prettier
-
-## Installation in OpenCode
-
-Create or edit `~/.config/opencode/config.json`:
-
-```json
-{
-  "plugins": ["{{pluginName}}"]
-}
-```
-
-## Author
-
-{{authorName}} <{{authorEmail}}>
-
-## Repository
-
-{{repositoryUrl}}
-
-## Contributing
-
-Contributions are welcome! Please file issues or submit pull requests on the GitHub repository.
 
 ## License
 

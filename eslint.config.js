@@ -18,12 +18,14 @@ export default tseslint.config(
         sourceType: 'module',
       },
       globals: {
-        // Node.js globals
         console: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
-        // Bun globals
         Bun: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearTimeout: 'readonly',
+        clearInterval: 'readonly',
       },
     },
     plugins: {
